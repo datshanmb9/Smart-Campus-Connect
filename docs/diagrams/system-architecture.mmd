@@ -1,0 +1,38 @@
+flowchart TB
+    subgraph Users ["Campus Stakeholders"]
+        U1["Students (Mobile Users)"]
+        U2["Faculty (Web & Mobile Users)"]
+        U3["Administrators (Web Users)"]
+    end
+
+    subgraph ClientLayer ["Client Presentation Layer"]
+        CA["Flutter Android Mobile App<br/>(Dart / Material 3)"]
+        CB["React.js Web Dashboard<br/>(SPA / React Router / Axios)"]
+    end
+
+    subgraph GatewayLayer ["Application Gateway & API Layer (Node.js & Express.js)"]
+        G1["Express REST API (Port 5000)"]
+        G2["JWT Auth & Role-Based Access Control"]
+        G3["Multer Multipart File / Image Processor"]
+        G4["Business Logic & Conflict Prevention"]
+        G5["QR Code Generation & Verification Engine"]
+    end
+
+    subgraph CloudLayer ["Data & Cloud Storage Services"]
+        DB[("MongoDB Atlas Cloud Database<br/>(10 Collections via Mongoose)")]
+        IMG["Cloudinary CDN / Static Asset Storage"]
+    end
+
+    U1 --> CA
+    U2 --> CB
+    U2 --> CA
+    U3 --> CB
+
+    CA -- "HTTPS / JSON + Bearer JWT" --> G1
+    CB -- "HTTPS / JSON + Bearer JWT" --> G1
+
+    G1 --> G2 --> G3 --> G4 --> G5
+
+    G4 -- "TLS Encrypted Connection" --> DB
+    G3 -- "Direct Image Stream" --> IMG
+

@@ -1,0 +1,49 @@
+flowchart LR
+    Student((Student))
+    Faculty((Faculty))
+    Admin((Administrator))
+
+    subgraph Smart_Campus_Connect ["Smart Campus Connect System"]
+        UC1[Register & Login]
+        UC2[Scan QR & Report Issue]
+        UC3[Track Complaint Status]
+        UC4[Browse & Register for Events]
+        UC5[Post & Search Lost/Found]
+        UC6[Request Room/Facility Booking]
+        UC7[View In-App Notifications]
+        
+        UC8[Publish Announcements]
+        UC9[Create & Manage Events]
+        UC10[Review Departmental Complaints]
+        
+        UC11[Manage Locations & Generate QR]
+        UC12[Assign & Resolve Complaints]
+        UC13[Approve / Reject Bookings]
+        UC14[Manage User Roles & Moderation]
+        UC15[View Real-Time Analytics]
+    end
+
+    Student --> UC1
+    Student --> UC2
+    Student --> UC3
+    Student --> UC4
+    Student --> UC5
+    Student --> UC6
+    Student --> UC7
+
+    Faculty --> UC1
+    Faculty --> UC8
+    Faculty --> UC9
+    Faculty --> UC10
+    Faculty --> UC6
+    Faculty --> UC7
+
+    Admin --> UC1
+    Admin --> UC11
+    Admin --> UC12
+    Admin --> UC13
+    Admin --> UC14
+    Admin --> UC15
+    Admin --> UC8
+    Admin --> UC9
+

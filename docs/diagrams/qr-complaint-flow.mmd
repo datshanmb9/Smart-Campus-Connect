@@ -1,0 +1,40 @@
+sequenceDiagram
+    autonumber
+    actor Student as Student (Flutter App)
+    participant Camera as Mobile Scanner
+    participant Express as Express REST API
+    participant MongoDB as MongoDB Atlas Cloud
+    actor Admin as Admin (React Portal)
+    actor Staff as Maintenance Staff
+
+    Student->>Camera: Point camera at Classroom QR Code
+    Camera-->>Student: QR Code Detected: "PU-ENGG-LH204"
+    Student->>Express: GET /api/locations/qr/PU-ENGG-LH204
+    Express->>MongoDB: Query Location details
+    MongoDB-->>Express: Return Room Details (Block A, LH-204, Projector...)
+    Express-->>Student: Return 200 OK + Location Payload
+
+    Student->>Student: Select Category: "Projector Problem"
+    Student->>Student: Add Description + Take Photo
+    Student->>Express: POST /api/complaints (multipart/form-data)
+    Express->>MongoDB: Insert Complaint (Status: Pending) + ComplaintHistory
+    MongoDB-->>Express: Confirmed with Ticket #CMP-2026-0042
+    Express-->>Student: Return 201 Created + Ticket Summary
+
+    Admin->>Express: GET /api/complaints?status=Pending
+    Express->>MongoDB: Fetch pending complaints
+    MongoDB-->>Express: Return Complaints list
+    Express-->>Admin: Renders in React Admin Dashboard
+    Admin->>Express: PUT /api/complaints/:id/assign (Assign to Technician)
+    Express->>MongoDB: Update Status: Assigned, Append History, Create Notification
+    
+    Student->>Express: GET /api/complaints/my (Pull-to-refresh)
+    Express->>MongoDB: Fetch Student's Complaints
+    MongoDB-->>Express: Return updated records
+    Express-->>Student: Display Status: "Assigned"
+
+    Staff-->>Admin: Fixes projector on-site
+    Admin->>Express: PUT /api/complaints/:id/status (Status: "Resolved")
+    Express->>MongoDB: Update Status: Resolved, Log Resolution Time
+    Student->>Student: Receives in-app Notification: "Issue Resolved"
+

@@ -1,0 +1,15 @@
+flowchart TD
+    A([User selects Facility & Date]) --> B[Select Start Time & End Time]
+    B --> C[Validate Time Range: Start &lt; End]
+    C -- Invalid --> D[Show Form Validation Error]
+    C -- Valid --> E[Submit POST /api/bookings]
+    E --> F[(Check Bookings in MongoDB)]
+    F --> G{Any Approved Booking with overlapping time?}
+    G -- Yes Conflict Found --> H[Return 409 Conflict: Slot Unavailable]
+    G -- No Conflict --> I[Insert Booking with Status: 'Pending']
+    I --> J[Notify Administrator]
+    J --> K[Admin Reviews in React Dashboard]
+    K --> L{Admin Decision}
+    L -- Approve --> M[Update Status: 'Approved' & Notify User]
+    L -- Reject --> N[Update Status: 'Rejected' with Reason & Notify User]
+

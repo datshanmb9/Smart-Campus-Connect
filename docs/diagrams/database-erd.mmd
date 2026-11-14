@@ -1,0 +1,149 @@
+erDiagram
+    User ||--o{ Complaint : "reports"
+    User ||--o{ ComplaintHistory : "updates"
+    User ||--o{ Event : "creates"
+    User ||--o{ EventRegistration : "joins"
+    User ||--o{ LostFoundItem : "posts"
+    User ||--o{ Booking : "requests"
+    User ||--o{ Announcement : "publishes"
+    User ||--o{ Notification : "receives"
+
+    Location ||--o{ Complaint : "identifies"
+    Location ||--o{ Booking : "allocates"
+
+    Complaint ||--o{ ComplaintHistory : "records"
+    Event ||--o{ EventRegistration : "enrolls"
+
+    User {
+        ObjectId _id PK
+        string fullName
+        string email UK
+        string password
+        string role
+        string registrationNumber UK
+        string department
+        string phone
+        string avatarUrl
+        boolean isActive
+    }
+
+    Location {
+        ObjectId _id PK
+        string qrCode UK
+        string buildingName
+        string block
+        string floor
+        string roomNumber
+        string roomType
+        array facilities
+        string qrCodeImageUrl
+        boolean isActive
+    }
+
+    Complaint {
+        ObjectId _id PK
+        string ticketNumber UK
+        ObjectId studentId FK
+        ObjectId locationId FK
+        string category
+        string title
+        string description
+        string imageUrl
+        string priority
+        string status
+        object assignedTo
+        string rejectionReason
+        string resolutionNotes
+        date resolvedAt
+    }
+
+    ComplaintHistory {
+        ObjectId _id PK
+        ObjectId complaintId FK
+        ObjectId changedBy FK
+        string previousStatus
+        string newStatus
+        string actionNotes
+        date timestamp
+    }
+
+    Event {
+        ObjectId _id PK
+        string title
+        string description
+        string category
+        ObjectId organizer FK
+        string venue
+        date eventDate
+        string startTime
+        string endTime
+        date registrationDeadline
+        number maxParticipants
+        number currentRegistrationsCount
+        string bannerImageUrl
+        string status
+    }
+
+    EventRegistration {
+        ObjectId _id PK
+        ObjectId eventId FK
+        ObjectId studentId FK
+        string ticketCode UK
+        string status
+        date registrationDate
+    }
+
+    LostFoundItem {
+        ObjectId _id PK
+        string type
+        ObjectId postedBy FK
+        string title
+        string category
+        string description
+        string location
+        date itemDate
+        string imageUrl
+        string status
+        ObjectId claimer FK
+        string claimNotes
+        boolean isContactVisible
+    }
+
+    Booking {
+        ObjectId _id PK
+        string resourceName
+        ObjectId locationId FK
+        ObjectId requestedBy FK
+        string purpose
+        date bookingDate
+        string startTime
+        string endTime
+        number attendeesEstimate
+        string status
+        ObjectId reviewedBy FK
+        string rejectionReason
+    }
+
+    Announcement {
+        ObjectId _id PK
+        string title
+        string content
+        string category
+        boolean isImportant
+        ObjectId author FK
+        string targetAudience
+        string attachmentUrl
+        date expiresAt
+    }
+
+    Notification {
+        ObjectId _id PK
+        ObjectId recipient FK
+        string title
+        string message
+        string type
+        ObjectId relatedEntityId
+        boolean isRead
+        date createdAt
+    }
+

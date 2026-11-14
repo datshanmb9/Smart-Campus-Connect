@@ -1,0 +1,28 @@
+flowchart LR
+    subgraph Clients ["Independent Client Frontends"]
+        direction TB
+        W["React.js Web App<br/>(Admin & Faculty Workstation)"]
+        M["Flutter Android App<br/>(Student Smartphone)"]
+    end
+
+    subgraph API_Gateway ["Unified REST API Gateway"]
+        direction TB
+        EP1["/api/auth/*"]
+        EP2["/api/complaints/*"]
+        EP3["/api/locations/*"]
+        EP4["/api/events/*"]
+        EP5["/api/bookings/*"]
+        EP6["/api/lost-found/*"]
+        EP7["/api/announcements/*"]
+        EP8["/api/notifications/*"]
+        EP9["/api/analytics/*"]
+    end
+
+    subgraph Data_Tier ["Centralized Cloud Data Tier"]
+        DB[("MongoDB Atlas Cloud Database<br/>- Users<br/>- Locations<br/>- Complaints<br/>- ComplaintHistories<br/>- Events<br/>- EventRegistrations<br/>- LostFoundItems<br/>- Bookings<br/>- Announcements<br/>- Notifications")]
+    end
+
+    W -- "Axios HTTP + JWT" --> API_Gateway
+    M -- "Dio/Http + JWT" --> API_Gateway
+    API_Gateway -- "Mongoose Connection Pool" --> DB
+
