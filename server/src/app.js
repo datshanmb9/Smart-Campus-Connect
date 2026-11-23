@@ -26,23 +26,36 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // CORS configuration
-const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(',').map((url) => url.trim())
-  : ['http://localhost:5173', 'http://localhost:3000'];
+const rawClientUrls = process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',') : [];
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:5000',
+  ...rawClientUrls.map((url) => url.trim().replace(/\/+$/, '')),
+].filter(Boolean);
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow mobile apps / curl / Postman (origin is undefined) or allowed origins
-      if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV === 'development') {
-        callback(null, true);
-      } else {
-        callback(new Error(`CORS policy violation: Origin ${origin} not allowed`));
-      }
-    },
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow mobile apps, Flutter, curl, Postman (origin is undefined)
+    if (!origin) return callback(null, true);
+
+    const cleanOrigin = origin.replace(/\/+$/, '');
+    const isExplicitlyAllowed = allowedOrigins.includes(cleanOrigin);
+    const isVercelDomain = /^https:\/\/[a-zA-Z0-9_\-.]+\.vercel\.app$/.test(cleanOrigin);
+
+    if (isExplicitlyAllowed || isVercelDomain || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS policy violation: Origin ${origin} not allowed`));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // HTTP request logger
 if (process.env.NODE_ENV === 'development') {

@@ -180,7 +180,7 @@ const ComplaintDetails = () => {
                 </div>
                 <div style={{ border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', overflow: 'hidden', maxWidth: '420px', background: '#000' }}>
                   <img
-                    src={complaint.imageUrl.startsWith('http') ? complaint.imageUrl : `http://localhost:5000${complaint.imageUrl}`}
+                    src={complaint.imageUrl.startsWith('http') ? complaint.imageUrl : `${(import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace(/\/api\/?$/, '')}${complaint.imageUrl}`}
                     alt="Complaint Evidence"
                     style={{ width: '100%', height: 'auto', display: 'block' }}
                   />

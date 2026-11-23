@@ -1,6 +1,13 @@
 import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+export const SERVER_HOST_URL = API_BASE_URL.replace(/\/api\/?$/, '');
+
+export const getFileUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  return `${SERVER_HOST_URL}${path.startsWith('/') ? '' : '/'}${path}`;
+};
 
 const api = axios.create({
   baseURL: API_BASE_URL,

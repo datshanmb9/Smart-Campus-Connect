@@ -22,9 +22,14 @@ class ApiConstants {
 
   static Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
-    // Default to physical USB ADB reverse endpoint http://127.0.0.1:5000/api
-    _currentBaseUrl = defaultPhysicalUrl;
-    await prefs.setString(_keyBaseUrl, _currentBaseUrl);
+    final saved = prefs.getString(_keyBaseUrl);
+    if (saved != null && saved.trim().isNotEmpty) {
+      _currentBaseUrl = saved.trim();
+    } else {
+      // Default to physical USB/Wireless ADB reverse endpoint http://127.0.0.1:5000/api
+      _currentBaseUrl = defaultPhysicalUrl;
+      await prefs.setString(_keyBaseUrl, _currentBaseUrl);
+    }
   }
 
   static Future<void> setBaseUrl(String newUrl) async {
