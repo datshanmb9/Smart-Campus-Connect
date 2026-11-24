@@ -40,6 +40,9 @@ yarn-debug.log*
 yarn-error.log*
 *.log
 
+# Local uploads directory (images now stored on Cloudinary in production)
+server/uploads/
+
 # Operating System Files
 .DS_Store
 Thumbs.db

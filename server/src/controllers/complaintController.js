@@ -59,10 +59,10 @@ const createComplaint = async (req, res, next) => {
     }
 
     // Handle image file or image URL
+    // After Cloudinary migration: req.file.path contains the full HTTPS Cloudinary URL
     let imageUrl = req.body.imageUrl || '';
     if (req.file) {
-      // Formatted relative or host URL for static serving
-      imageUrl = `/uploads/${req.file.filename}`;
+      imageUrl = req.file.path || req.file.secure_url || '';
     }
 
     const ticketNumber = await generateTicketNumber();
